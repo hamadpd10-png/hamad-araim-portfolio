@@ -1,0 +1,9 @@
+'use client';
+import { useState } from 'react';
+import { ArrowLeft, ArrowRight, Expand, ExternalLink } from 'lucide-react';
+import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
+export type GalleryItem = { n:number; title:string; credit?:string };
+export default function Gallery({ project, items }: {project:string;items:GalleryItem[]}) {
+ const [index,setIndex]=useState(0);const item=items[index];
+ return <Dialog><div className="gallery-grid">{items.map((entry,i)=><DialogTrigger key={entry.n} className="gallery-item" onClick={()=>setIndex(i)} aria-label={`Enlarge ${entry.title}`}><div className="gallery-image"><img src={`/projects/${project}-${entry.n}.webp`} alt={entry.title} loading="lazy"/><span><Expand size={16}/></span></div><div className="gallery-caption"><span>{entry.title}</span><small>{entry.credit??'Team deliverable'}</small></div></DialogTrigger>)}</div><DialogContent className="gallery-dialog" onKeyDown={e=>{if(e.key==='ArrowRight'){e.preventDefault();setIndex((index+1)%items.length)}if(e.key==='ArrowLeft'){e.preventDefault();setIndex((index+items.length-1)%items.length)}}}><DialogTitle>{item.title}</DialogTitle><DialogDescription>{item.credit??'Team deliverable'} · {index+1} of {items.length}</DialogDescription><img className="expanded-image" src={`/projects/${project}-${item.n}.webp`} alt={item.title}/><div className="gallery-controls"><button aria-label="Previous image" onClick={()=>setIndex((index+items.length-1)%items.length)}><ArrowLeft size={18}/></button><a target="_blank" rel="noreferrer" href={`/projects/${project}-${item.n}.webp`}>Open full image <ExternalLink size={14}/></a><button aria-label="Next image" onClick={()=>setIndex((index+1)%items.length)}><ArrowRight size={18}/></button></div></DialogContent></Dialog>;
+}
